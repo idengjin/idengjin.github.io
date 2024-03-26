@@ -25,7 +25,7 @@
     <script class="keep-theme-configurations">
     const KEEP = window.KEEP || {}
     KEEP.hexo_config = {"hostname":"example.com","root":"/","language":"en"}
-    KEEP.theme_config = {"base_info":{"primary_color":"#0066cc","title":"Idengjin's Blog","author":"Idengjin","avatar":"/images/avatar.svg","logo":"/images/logo.svg","favicon":"/images/logo.svg"},"menu":{"home":"/","archives":"/archives","tags":"/tags","categories":"/categories"},"first_screen":{"enable":true,"background_img":"/images/bg.svg","background_img_dark":"/images/bg.svg","description":"慢慢地迈向听朝 静静地怀念昨日","hitokoto":false},"social_contact":{"enable":false,"links":{"github":null,"weixin":null,"qq":null,"weibo":null,"zhihu":null,"twitter":null,"x":null,"facebook":null,"email":null}},"scroll":{"progress_bar":true,"percent":true,"hide_header":true},"home":{"announcement":null,"category":true,"tag":true,"post_datetime":"updated"},"post":{"author_badge":{"enable":true,"level_badge":false,"custom_badge":["coding"]},"word_count":{"wordcount":true,"min2read":true},"datetime_format":"YYYY-MM-DD HH:mm:ss","copyright_info":true,"share":true,"reward":{"enable":false,"img_link":null,"text":null}},"code_block":{"tools":{"enable":true,"style":"mac"},"highlight_theme":"default"},"toc":{"enable":true,"number":false,"expand_all":true,"init_open":true,"layout":"right"},"website_count":{"busuanzi_count":{"enable":true,"site_uv":true,"site_pv":true,"page_pv":true}},"local_search":{"enable":true,"preload":true},"comment":{"enable":false,"use":"valine","valine":{"appid":null,"appkey":null,"server_urls":null,"placeholder":null},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.21"},"waline":{"server_url":null,"reaction":false,"version":2},"giscus":{"repo":null,"repo_id":null,"category":"Announcements","category_id":null,"reactions_enabled":false},"artalk":{"server":null},"disqus":{"shortname":null}},"rss":{"enable":false},"lazyload":{"enable":true},"cdn":{"enable":true,"provider":"cdnjs"},"pjax":{"enable":true},"footer":{"since":2024,"word_count":true,"icp":{"enable":false,"record_code":null,"url":"https://beian.miit.gov.cn"},"site_deploy":{"enable":true,"provider":"github","url":null},"shields_style":{"enable":false,"custom":[{"link_url":null,"img_url":null}]}},"inject":{"enable":false,"css":[null],"js":[null]},"root":"","source_data":{},"version":"4.1.0"}
+    KEEP.theme_config = {"base_info":{"primary_color":"#0066cc","title":"Idengjin's Blog","author":"Idengjin","avatar":"/images/avatar.svg","logo":"/images/logo.svg","favicon":"/images/logo.svg"},"menu":{"home":"/","archives":"/archives","tags":"/tags","categories":"/categories"},"first_screen":{"enable":true,"background_img":"/images/bg.svg","background_img_dark":"/images/bg.svg","description":"慢慢地迈向听朝 静静地怀念昨日","hitokoto":false},"social_contact":{"enable":false,"links":{"github":null,"weixin":null,"qq":null,"weibo":null,"zhihu":null,"twitter":null,"x":null,"facebook":null,"email":null}},"scroll":{"progress_bar":false,"percent":true,"hide_header":true},"home":{"announcement":null,"category":true,"tag":true,"post_datetime":"updated"},"post":{"author_badge":{"enable":true,"level_badge":false,"custom_badge":["coding"]},"word_count":{"wordcount":true,"min2read":true},"datetime_format":"YYYY-MM-DD HH:mm:ss","copyright_info":true,"share":true,"reward":{"enable":false,"img_link":null,"text":null}},"code_block":{"tools":{"enable":true,"style":"mac"},"highlight_theme":"default"},"toc":{"enable":true,"number":false,"expand_all":true,"init_open":true,"layout":"right"},"website_count":{"busuanzi_count":{"enable":true,"site_uv":true,"site_pv":true,"page_pv":true}},"local_search":{"enable":true,"preload":true},"comment":{"enable":false,"use":"valine","valine":{"appid":null,"appkey":null,"server_urls":null,"placeholder":null},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.21"},"waline":{"server_url":null,"reaction":false,"version":2},"giscus":{"repo":null,"repo_id":null,"category":"Announcements","category_id":null,"reactions_enabled":false},"artalk":{"server":null},"disqus":{"shortname":null}},"rss":{"enable":false},"lazyload":{"enable":true},"cdn":{"enable":true,"provider":"cdnjs"},"pjax":{"enable":true},"footer":{"since":2024,"word_count":true,"icp":{"enable":false,"record_code":null,"url":"https://beian.miit.gov.cn"},"site_deploy":{"enable":true,"provider":"github","url":null},"shields_style":{"enable":false,"custom":[{"link_url":null,"img_url":null}]}},"inject":{"enable":false,"css":[null],"js":[null]},"root":"","source_data":{},"version":"4.1.0"}
     KEEP.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"}
     KEEP.language_code_block = {"copy":"Copy code","copied":"Copied","fold":"Fold code block","folded":"Folded"}
     KEEP.language_copy_copyright = {"copy":"Copy copyright info","copied":"Copied","title":"Original post title","author":"Original post author","link":"Original post link"}
@@ -35,8 +35,6 @@
 
 <body>
 <div class="progress-bar-container">
-    
-        <span class="scroll-progress-bar"></span>
     
 
     
@@ -50,32 +48,157 @@
 <main class="page-container border-box">
     <!-- home first screen  -->
     
-        
-<div class="first-screen-container border-box flex-center fade-in-down-animation">
-    <div class="first-screen-content border-box">
-        <div class="top-placeholder border-box"></div>
+        if (hexo-config('first_screen')) {
+  $temp-fs-bg-img-light = hexo-config('first_screen.background_img')
+  $temp-fs-bg-img-dark = hexo-config('first_screen.background_img_dark')
+}
+else {
+  $temp-fs-bg-img-light = ''
+  $temp-fs-bg-img-dark = ''
+}
 
-        <div class="middle-placeholder border-box">
-            
-                <div class="description border-box">
-                    
-                        
-                            
-                                <div class="desc-item border-box"><span class="desc">慢慢地迈向听朝 静静地怀念昨日</span><span class="cursor">｜</span></div>
-                            
-                        
-                    
-                </div>
-            
+$fs-bg-img-light = $temp-fs-bg-img-light ? $temp-fs-bg-img-light : '/images/bg.svg'
+$fs-bg-img-dark = $temp-fs-bg-img-dark ? $temp-fs-bg-img-dark : $fs-bg-img-light
 
-            
-        </div>
+$root = hexo-config('root')
 
-        <div class="bottom-placeholder border-box">
-            
-        </div>
-    </div>
-</div>
+.first-screen-container {
+  width 100%
+  height 100vh
+  overflow hidden
+  background-image url($root + $fs-bg-img-light)
+  background-position-x center
+  background-position-y center
+  background-size cover
+  background-repeat-x no-repeat
+  background-repeat-y no-repeat
+
+
+  .dark-mode & {
+    background-image url($root + $fs-bg-img-dark)
+  }
+
+  .first-screen-content {
+    display flex
+    flex-direction column
+    align-items center
+    justify-content space-between
+    width 80%
+    height 90%
+    padding-top calc(var(--header-height) * 0.5)
+
+    +keep-tablet() {
+      padding-top calc(var(--header-height) * 0.5 * 0.9)
+    }
+
+    +keep-mobile() {
+      padding-top calc(var(--header-height) * 0.5 * 0.8)
+    }
+
+    .description {
+      display var(--first-screen-display)
+      color var(--first-screen-font-color-light)
+      font-weight bold
+      font-size var(--first-screen-font-size)
+      font-family var(--first-screen-font-family)
+      line-height 1.8
+      text-align center
+      transform translateY(var(--first-screen-font-offset))
+      opacity 0
+
+      .dark-mode & {
+        color var(--first-screen-font-color-dark)
+
+        .desc-item {
+          .desc
+          .cursor {
+            color var(--first-screen-font-color-dark)
+          }
+        }
+      }
+
+
+      .desc-item {
+        .desc {
+          color var(--first-screen-font-color-light)
+        }
+
+        .cursor {
+          color var(--first-screen-font-color-light)
+          animation blink-caret 0.8s step-end infinite
+        }
+      }
+
+
+      +keep-tablet() {
+        font-size calc(var(--first-screen-font-size) * 0.9)
+      }
+    }
+
+
+    .bottom-placeholder {
+      width 100%
+
+      .sc-icon-list {
+        display flex
+        justify-content center
+
+        .sc-icon-item {
+          display flex
+          align-items center
+          margin 0 1rem
+          cursor pointer
+
+          i {
+            color var(--first-screen-icon-color-light)
+            font-size var(--first-screen-icon-size)
+          }
+
+
+          svg {
+            width var(--first-screen-icon-size)
+            height var(--first-screen-icon-size)
+
+            path {
+              fill var(--first-screen-icon-color-light)
+            }
+          }
+
+
+          .dark-mode & {
+            i {
+              color var(--first-screen-icon-color-dark)
+            }
+
+            svg {
+              path {
+                fill var(--first-screen-icon-color-dark)
+              }
+            }
+          }
+
+
+          +keep-tablet() {
+            i {
+              font-size calc(var(--first-screen-icon-size) * 0.9)
+            }
+
+            svg {
+              width calc(var(--first-screen-icon-size) * 0.9)
+              height calc(var(--first-screen-icon-size) * 0.9)
+            }
+          }
+
+
+          a {
+            display flex !important
+            align-items center !important
+          }
+        }
+      }
+    }
+  }
+}
 
     
 

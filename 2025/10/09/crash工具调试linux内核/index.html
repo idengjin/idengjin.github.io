@@ -9,7 +9,7 @@
     
     <title>
         
-            Hello World |
+            crash工具调试linux内核 |
         
         Idengjin&#39;s Blog
     </title>
@@ -186,7 +186,7 @@
             <div class="post-content-bottom border-box">
                 
                     <div class="post-title">
-                        Hello World
+                        crash工具调试linux内核
                     </div>
                 
 
@@ -214,12 +214,12 @@
         
             <span class="meta-info-item post-create-date">
                 <i class="icon fa-solid fa-calendar-plus"></i>&nbsp;
-                <span class="datetime">2024-04-01 18:55:49</span>
+                <span class="datetime">2025-10-09 02:49:24</span>
             </span>
 
             <span class="meta-info-item post-update-date">
                 <i class="icon fa-solid fa-file-pen"></i>&nbsp;
-                <span class="datetime" data-updated="Mon Mar 25 2024 23:44:49 GMT+0800">2024-03-25 23:44:49</span>
+                <span class="datetime" data-updated="Thu Oct 09 2025 02:49:54 GMT+0800">2025-10-09 02:49:54</span>
             </span>
         
 
@@ -248,19 +248,26 @@
                 <div class="post-content keep-markdown-body">
                     
 
-                    <p>Welcome to <a class="link"   target="_blank" rel="noopener" href="https://hexo.io/" >Hexo<i class="fas fa-external-link-alt"></i></a>! This is your very first post. Check <a class="link"   target="_blank" rel="noopener" href="https://hexo.io/docs/" >documentation<i class="fas fa-external-link-alt"></i></a> for more info. If you get any problems when using Hexo, you can find the answer in <a class="link"   target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html" >troubleshooting<i class="fas fa-external-link-alt"></i></a> or you can ask me on <a class="link"   target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues" >GitHub<i class="fas fa-external-link-alt"></i></a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a class="link"   target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html" >Writing<i class="fas fa-external-link-alt"></i></a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a class="link"   target="_blank" rel="noopener" href="https://hexo.io/docs/server.html" >Server<i class="fas fa-external-link-alt"></i></a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a class="link"   target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html" >Generating<i class="fas fa-external-link-alt"></i></a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a class="link"   target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html" >Deployment<i class="fas fa-external-link-alt"></i></a></p>
+                    <p>crash常用命令<br>启动crash:</p>
+<p>crash vmlinux vmcore<br>crash vmlinux # 在线调试，vmcore是&#x2F;proc&#x2F;kcore，注意这个文件无法复制<br>help命令:</p>
+<p>crash&gt; help # 查看支持的所有命令<br>crash&gt; help bt # 查看具体命令（bt）的用法<br>sys命令查看系统信息:</p>
+<p>crash&gt; sys<br>bt命令:</p>
+<p>crash&gt; bt # 查看崩溃瞬间正在运行的进程的内核栈<br>crash&gt; bt <pid> # 查看指定pid进程的栈</p>
+<h1 id="F-F-类似于-f，不同之处在于当适用时以符号方式显示堆栈数据；如果堆栈数据引用了-slab-cache-对象，将在方括号内显示-slab-cache-的名称；在-ia64-架构上，将以符号方式替代参数寄存器的内容。如果输入-F-两次，并且堆栈数据引用了-slab-cache-对象，将同时显示地址和-slab-cache-的名称在方括号中。"><a href="#F-F-类似于-f，不同之处在于当适用时以符号方式显示堆栈数据；如果堆栈数据引用了-slab-cache-对象，将在方括号内显示-slab-cache-的名称；在-ia64-架构上，将以符号方式替代参数寄存器的内容。如果输入-F-两次，并且堆栈数据引用了-slab-cache-对象，将同时显示地址和-slab-cache-的名称在方括号中。" class="headerlink" title="-F[F]: 类似于 -f，不同之处在于当适用时以符号方式显示堆栈数据；如果堆栈数据引用了 slab cache 对象，将在方括号内显示 slab cache 的名称；在 ia64 架构上，将以符号方式替代参数寄存器的内容。如果输入 -F 两次，并且堆栈数据引用了 slab cache 对象，将同时显示地址和 slab cache 的名称在方括号中。"></a>-F[F]: 类似于 -f，不同之处在于当适用时以符号方式显示堆栈数据；如果堆栈数据引用了 slab cache 对象，将在方括号内显示 slab cache 的名称；在 ia64 架构上，将以符号方式替代参数寄存器的内容。如果输入 -F 两次，并且堆栈数据引用了 slab cache 对象，将同时显示地址和 slab cache 的名称在方括号中。</h1><p>crash&gt; bt -F<br>crash&gt; bt -FF</p>
+<h1 id="f-显示堆栈帧中包含的所有数据；此选项可用于确定传递给每个函数的参数；在-ia64-架构上，将显示参数寄存器的内容。"><a href="#f-显示堆栈帧中包含的所有数据；此选项可用于确定传递给每个函数的参数；在-ia64-架构上，将显示参数寄存器的内容。" class="headerlink" title="-f: 显示堆栈帧中包含的所有数据；此选项可用于确定传递给每个函数的参数；在 ia64 架构上，将显示参数寄存器的内容。"></a>-f: 显示堆栈帧中包含的所有数据；此选项可用于确定传递给每个函数的参数；在 ia64 架构上，将显示参数寄存器的内容。</h1><p>crash&gt; bt -f</p>
+<h1 id="其他选项"><a href="#其他选项" class="headerlink" title="其他选项:"></a>其他选项:</h1><p>-t: 显示文本符号。<br>-l: 显示文件名、行号。<br>dis命令:</p>
+<h1 id="l-显示源代码行号"><a href="#l-显示源代码行号" class="headerlink" title="-l: 显示源代码行号"></a>-l: 显示源代码行号</h1><h1 id="s-显示源代码"><a href="#s-显示源代码" class="headerlink" title="-s: 显示源代码"></a>-s: 显示源代码</h1><p>crash&gt; dis function_name # 输出函数的反汇编结果<br>mod命令:</p>
+<p>crash&gt; mod # 显示所有模块的信息<br>crash&gt; mod -s <module name> <ko path> # 加载<br>crash&gt; mod -d <module name> # 删除<br>crash&gt; mod -S # 从某个特定目录加载所有模块，默认从&#x2F;lib&#x2F;modules&#x2F;<code>uname -r</code> 目录<br>sym命令（解析符号信息）:</p>
+<p>crash&gt; sym -l # 相当于查看 System.map<br>crash&gt; sym -m ubifs # 查看某个内核模块<br>crash&gt; sym -q ext2 # 查看包含ext2字符串的符号信息<br>rd命令用于读取内存地址的值:</p>
+<h1 id="p-物理地址"><a href="#p-物理地址" class="headerlink" title="-p: 物理地址"></a>-p: 物理地址</h1><h1 id="u-用户空间虚拟地址"><a href="#u-用户空间虚拟地址" class="headerlink" title="-u: 用户空间虚拟地址"></a>-u: 用户空间虚拟地址</h1><h1 id="d-10进制"><a href="#d-10进制" class="headerlink" title="-d: 10进制"></a>-d: 10进制</h1><h1 id="s-显示符号"><a href="#s-显示符号" class="headerlink" title="-s: 显示符号"></a>-s: 显示符号</h1><h1 id="32-32位宽"><a href="#32-32位宽" class="headerlink" title="-32: 32位宽"></a>-32: 32位宽</h1><h1 id="64-64位宽"><a href="#64-64位宽" class="headerlink" title="-64: 64位宽"></a>-64: 64位宽</h1><h1 id="a-ascii码"><a href="#a-ascii码" class="headerlink" title="-a: ascii码"></a>-a: ascii码</h1><p>crash&gt; rd 0xffff888005462800 20 # 读20个值<br>struct命令:</p>
+<p>crash&gt; struct ext2_inode # 显示结构体定义<br>crash&gt; struct ext2_inode -o # 偏移<br>crash&gt; struct ext2_inode ffff88800dc59820 # 解析值<br>crash&gt; struct ext2_inode.i_mtime ffff88800dc59820 # 某个成员的值<br>p命令:</p>
+<p>crash&gt; p jiffies<br>crash&gt; p ext2_readdir # 输出函数符号地址<br>crash&gt; p irq_stat # percpu变量，定义在 arch&#x2F;x86&#x2F;kernel&#x2F;irq.c 中<br>crash&gt; p irq_stat:0 # cpu 0<br>irq中断相关信息:</p>
+<h1 id="a-中断亲和性"><a href="#a-中断亲和性" class="headerlink" title="-a: 中断亲和性"></a>-a: 中断亲和性</h1><h1 id="s-系统中断信息"><a href="#s-系统中断信息" class="headerlink" title="-s: 系统中断信息"></a>-s: 系统中断信息</h1><p>crash&gt; irq # 所有中断<br>crash&gt; irq 0 # 第0个中断<br>crash&gt; irq -b # 下半部<br>task命令显示struct task_struct和struct thread_info的内容:</p>
+<p>crash&gt; task -x # 16进制<br>vm命令显示进程地址空间:</p>
+<h1 id="p-虚拟地址和物理地址"><a href="#p-虚拟地址和物理地址" class="headerlink" title="-p: 虚拟地址和物理地址"></a>-p: 虚拟地址和物理地址</h1><h1 id="m-mm-struct"><a href="#m-mm-struct" class="headerlink" title="-m: mm_struct"></a>-m: mm_struct</h1><h1 id="R-搜索"><a href="#R-搜索" class="headerlink" title="-R: 搜索"></a>-R: 搜索</h1><h1 id="v-所有-vm-area-struct"><a href="#v-所有-vm-area-struct" class="headerlink" title="-v: 所有 vm_area_struct"></a>-v: 所有 vm_area_struct</h1><h1 id="f-num-显示num在vm-flags对应的位"><a href="#f-num-显示num在vm-flags对应的位" class="headerlink" title="-f num: 显示num在vm_flags对应的位"></a>-f num: 显示num在vm_flags对应的位</h1><p>crash&gt; vm # 崩溃瞬间进程<br>crash&gt; vm 575 # 指定pid<br>kmem显示内存信息:</p>
+<p>crash&gt; kmem -i # 系统内存使用情况<br>crash&gt; kmem -s # slab使用情况<br>crash&gt; kmem -v # vmalloc<br>crash&gt; kmem -V # vm_stat<br>crash&gt; kmem -z # zone<br>crash&gt; kmem -p # page<br>crash&gt; kmem -g # page flag<br>list命令:</p>
+<p>crash&gt; list super_blocks</p>
+<h1 id="s-链表成员"><a href="#s-链表成员" class="headerlink" title="-s: 链表成员"></a>-s: 链表成员</h1><h1 id="h-链表头地址，这里可以用-p-super-blocks-获取"><a href="#h-链表头地址，这里可以用-p-super-blocks-获取" class="headerlink" title="-h: 链表头地址，这里可以用 p super_blocks 获取"></a>-h: 链表头地址，这里可以用 p super_blocks 获取</h1><p>crash&gt; list -s super_block.s_blocksize_bits,s_maxbytes -h 0xffff888005462800<br>crash&gt; list -h 0xffff888005462800 | wc -l # 链表长度</p>
 
                 </div>
                 
@@ -269,11 +276,11 @@
     <div class="copyright-info-content border-box">
         <div class="copyright-info-top border-box">
             <div class="copyright-post-title border-box text-ellipsis">
-                Hello World
+                crash工具调试linux内核
             </div>
 
             <div class="copyright-post-link border-box text-ellipsis">
-                2024/04/01/hello-world/
+                2025/10/09/crash工具调试linux内核/
             </div>
         </div>
 
@@ -289,7 +296,7 @@
                 <div class="type">
                     Published
                 </div>
-                <div class="content">2024-04-01 18:55</div>
+                <div class="content">2025-10-09 02:49</div>
             </div>
 
 
@@ -356,31 +363,15 @@
                 
                     <div class="post-nav border-box">
                         
-                            <div class="prev-post">
-                                <a class="prev"
-                                   rel="prev"
-                                   href="/2024/07/09/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E6%90%AD%E5%BB%BA%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/"
-                                   title="从零开始搭建文件系统"
-                                >
-                                    <span class="left arrow-icon flex-center">
-                                        <i class="fas fa-chevron-left"></i>
-                                    </span>
-                                    <span class="title flex-center">
-                                        <span class="post-nav-title-item text-ellipsis">从零开始搭建文件系统</span>
-                                        <span class="post-nav-item">Prev posts</span>
-                                    </span>
-                                </a>
-                            </div>
-                        
                         
                             <div class="next-post">
                                 <a class="next"
                                    rel="next"
-                                   href="/2024/03/26/Hexo-Github-Ubuntu%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/"
-                                   title="Hexo+Github+Ubuntu搭建个人博客"
+                                   href="/2025/10/09/hello-world/"
+                                   title="Hello World"
                                 >
                                     <span class="title flex-center">
-                                        <span class="post-nav-title-item text-ellipsis">Hexo+Github+Ubuntu搭建个人博客</span>
+                                        <span class="post-nav-title-item text-ellipsis">Hello World</span>
                                         <span class="post-nav-item">Next posts</span>
                                     </span>
                                     <span class="right arrow-icon flex-center">
@@ -408,7 +399,7 @@
             <div class="pc-post-toc right-toc">
                 <div class="post-toc-wrap border-box">
     <div class="post-toc border-box">
-        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Quick-Start"><span class="nav-text">Quick Start</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Create-a-new-post"><span class="nav-text">Create a new post</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Run-server"><span class="nav-text">Run server</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Generate-static-files"><span class="nav-text">Generate static files</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Deploy-to-remote-sites"><span class="nav-text">Deploy to remote sites</span></a></li></ol></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#F-F-%E7%B1%BB%E4%BC%BC%E4%BA%8E-f%EF%BC%8C%E4%B8%8D%E5%90%8C%E4%B9%8B%E5%A4%84%E5%9C%A8%E4%BA%8E%E5%BD%93%E9%80%82%E7%94%A8%E6%97%B6%E4%BB%A5%E7%AC%A6%E5%8F%B7%E6%96%B9%E5%BC%8F%E6%98%BE%E7%A4%BA%E5%A0%86%E6%A0%88%E6%95%B0%E6%8D%AE%EF%BC%9B%E5%A6%82%E6%9E%9C%E5%A0%86%E6%A0%88%E6%95%B0%E6%8D%AE%E5%BC%95%E7%94%A8%E4%BA%86-slab-cache-%E5%AF%B9%E8%B1%A1%EF%BC%8C%E5%B0%86%E5%9C%A8%E6%96%B9%E6%8B%AC%E5%8F%B7%E5%86%85%E6%98%BE%E7%A4%BA-slab-cache-%E7%9A%84%E5%90%8D%E7%A7%B0%EF%BC%9B%E5%9C%A8-ia64-%E6%9E%B6%E6%9E%84%E4%B8%8A%EF%BC%8C%E5%B0%86%E4%BB%A5%E7%AC%A6%E5%8F%B7%E6%96%B9%E5%BC%8F%E6%9B%BF%E4%BB%A3%E5%8F%82%E6%95%B0%E5%AF%84%E5%AD%98%E5%99%A8%E7%9A%84%E5%86%85%E5%AE%B9%E3%80%82%E5%A6%82%E6%9E%9C%E8%BE%93%E5%85%A5-F-%E4%B8%A4%E6%AC%A1%EF%BC%8C%E5%B9%B6%E4%B8%94%E5%A0%86%E6%A0%88%E6%95%B0%E6%8D%AE%E5%BC%95%E7%94%A8%E4%BA%86-slab-cache-%E5%AF%B9%E8%B1%A1%EF%BC%8C%E5%B0%86%E5%90%8C%E6%97%B6%E6%98%BE%E7%A4%BA%E5%9C%B0%E5%9D%80%E5%92%8C-slab-cache-%E7%9A%84%E5%90%8D%E7%A7%B0%E5%9C%A8%E6%96%B9%E6%8B%AC%E5%8F%B7%E4%B8%AD%E3%80%82"><span class="nav-text">-F[F]: 类似于 -f，不同之处在于当适用时以符号方式显示堆栈数据；如果堆栈数据引用了 slab cache 对象，将在方括号内显示 slab cache 的名称；在 ia64 架构上，将以符号方式替代参数寄存器的内容。如果输入 -F 两次，并且堆栈数据引用了 slab cache 对象，将同时显示地址和 slab cache 的名称在方括号中。</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#f-%E6%98%BE%E7%A4%BA%E5%A0%86%E6%A0%88%E5%B8%A7%E4%B8%AD%E5%8C%85%E5%90%AB%E7%9A%84%E6%89%80%E6%9C%89%E6%95%B0%E6%8D%AE%EF%BC%9B%E6%AD%A4%E9%80%89%E9%A1%B9%E5%8F%AF%E7%94%A8%E4%BA%8E%E7%A1%AE%E5%AE%9A%E4%BC%A0%E9%80%92%E7%BB%99%E6%AF%8F%E4%B8%AA%E5%87%BD%E6%95%B0%E7%9A%84%E5%8F%82%E6%95%B0%EF%BC%9B%E5%9C%A8-ia64-%E6%9E%B6%E6%9E%84%E4%B8%8A%EF%BC%8C%E5%B0%86%E6%98%BE%E7%A4%BA%E5%8F%82%E6%95%B0%E5%AF%84%E5%AD%98%E5%99%A8%E7%9A%84%E5%86%85%E5%AE%B9%E3%80%82"><span class="nav-text">-f: 显示堆栈帧中包含的所有数据；此选项可用于确定传递给每个函数的参数；在 ia64 架构上，将显示参数寄存器的内容。</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E9%80%89%E9%A1%B9"><span class="nav-text">其他选项:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#l-%E6%98%BE%E7%A4%BA%E6%BA%90%E4%BB%A3%E7%A0%81%E8%A1%8C%E5%8F%B7"><span class="nav-text">-l: 显示源代码行号</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#s-%E6%98%BE%E7%A4%BA%E6%BA%90%E4%BB%A3%E7%A0%81"><span class="nav-text">-s: 显示源代码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#p-%E7%89%A9%E7%90%86%E5%9C%B0%E5%9D%80"><span class="nav-text">-p: 物理地址</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#u-%E7%94%A8%E6%88%B7%E7%A9%BA%E9%97%B4%E8%99%9A%E6%8B%9F%E5%9C%B0%E5%9D%80"><span class="nav-text">-u: 用户空间虚拟地址</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#d-10%E8%BF%9B%E5%88%B6"><span class="nav-text">-d: 10进制</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#s-%E6%98%BE%E7%A4%BA%E7%AC%A6%E5%8F%B7"><span class="nav-text">-s: 显示符号</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#32-32%E4%BD%8D%E5%AE%BD"><span class="nav-text">-32: 32位宽</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#64-64%E4%BD%8D%E5%AE%BD"><span class="nav-text">-64: 64位宽</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#a-ascii%E7%A0%81"><span class="nav-text">-a: ascii码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#a-%E4%B8%AD%E6%96%AD%E4%BA%B2%E5%92%8C%E6%80%A7"><span class="nav-text">-a: 中断亲和性</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#s-%E7%B3%BB%E7%BB%9F%E4%B8%AD%E6%96%AD%E4%BF%A1%E6%81%AF"><span class="nav-text">-s: 系统中断信息</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#p-%E8%99%9A%E6%8B%9F%E5%9C%B0%E5%9D%80%E5%92%8C%E7%89%A9%E7%90%86%E5%9C%B0%E5%9D%80"><span class="nav-text">-p: 虚拟地址和物理地址</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#m-mm-struct"><span class="nav-text">-m: mm_struct</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#R-%E6%90%9C%E7%B4%A2"><span class="nav-text">-R: 搜索</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#v-%E6%89%80%E6%9C%89-vm-area-struct"><span class="nav-text">-v: 所有 vm_area_struct</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#f-num-%E6%98%BE%E7%A4%BAnum%E5%9C%A8vm-flags%E5%AF%B9%E5%BA%94%E7%9A%84%E4%BD%8D"><span class="nav-text">-f num: 显示num在vm_flags对应的位</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#s-%E9%93%BE%E8%A1%A8%E6%88%90%E5%91%98"><span class="nav-text">-s: 链表成员</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#h-%E9%93%BE%E8%A1%A8%E5%A4%B4%E5%9C%B0%E5%9D%80%EF%BC%8C%E8%BF%99%E9%87%8C%E5%8F%AF%E4%BB%A5%E7%94%A8-p-super-blocks-%E8%8E%B7%E5%8F%96"><span class="nav-text">-h: 链表头地址，这里可以用 p super_blocks 获取</span></a></li></ol>
     </div>
 </div>
 
@@ -588,7 +579,7 @@
             <div class="tablet-post-toc">
                 <div class="post-toc-wrap border-box">
     <div class="post-toc border-box">
-        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Quick-Start"><span class="nav-text">Quick Start</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Create-a-new-post"><span class="nav-text">Create a new post</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Run-server"><span class="nav-text">Run server</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Generate-static-files"><span class="nav-text">Generate static files</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Deploy-to-remote-sites"><span class="nav-text">Deploy to remote sites</span></a></li></ol></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#F-F-%E7%B1%BB%E4%BC%BC%E4%BA%8E-f%EF%BC%8C%E4%B8%8D%E5%90%8C%E4%B9%8B%E5%A4%84%E5%9C%A8%E4%BA%8E%E5%BD%93%E9%80%82%E7%94%A8%E6%97%B6%E4%BB%A5%E7%AC%A6%E5%8F%B7%E6%96%B9%E5%BC%8F%E6%98%BE%E7%A4%BA%E5%A0%86%E6%A0%88%E6%95%B0%E6%8D%AE%EF%BC%9B%E5%A6%82%E6%9E%9C%E5%A0%86%E6%A0%88%E6%95%B0%E6%8D%AE%E5%BC%95%E7%94%A8%E4%BA%86-slab-cache-%E5%AF%B9%E8%B1%A1%EF%BC%8C%E5%B0%86%E5%9C%A8%E6%96%B9%E6%8B%AC%E5%8F%B7%E5%86%85%E6%98%BE%E7%A4%BA-slab-cache-%E7%9A%84%E5%90%8D%E7%A7%B0%EF%BC%9B%E5%9C%A8-ia64-%E6%9E%B6%E6%9E%84%E4%B8%8A%EF%BC%8C%E5%B0%86%E4%BB%A5%E7%AC%A6%E5%8F%B7%E6%96%B9%E5%BC%8F%E6%9B%BF%E4%BB%A3%E5%8F%82%E6%95%B0%E5%AF%84%E5%AD%98%E5%99%A8%E7%9A%84%E5%86%85%E5%AE%B9%E3%80%82%E5%A6%82%E6%9E%9C%E8%BE%93%E5%85%A5-F-%E4%B8%A4%E6%AC%A1%EF%BC%8C%E5%B9%B6%E4%B8%94%E5%A0%86%E6%A0%88%E6%95%B0%E6%8D%AE%E5%BC%95%E7%94%A8%E4%BA%86-slab-cache-%E5%AF%B9%E8%B1%A1%EF%BC%8C%E5%B0%86%E5%90%8C%E6%97%B6%E6%98%BE%E7%A4%BA%E5%9C%B0%E5%9D%80%E5%92%8C-slab-cache-%E7%9A%84%E5%90%8D%E7%A7%B0%E5%9C%A8%E6%96%B9%E6%8B%AC%E5%8F%B7%E4%B8%AD%E3%80%82"><span class="nav-text">-F[F]: 类似于 -f，不同之处在于当适用时以符号方式显示堆栈数据；如果堆栈数据引用了 slab cache 对象，将在方括号内显示 slab cache 的名称；在 ia64 架构上，将以符号方式替代参数寄存器的内容。如果输入 -F 两次，并且堆栈数据引用了 slab cache 对象，将同时显示地址和 slab cache 的名称在方括号中。</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#f-%E6%98%BE%E7%A4%BA%E5%A0%86%E6%A0%88%E5%B8%A7%E4%B8%AD%E5%8C%85%E5%90%AB%E7%9A%84%E6%89%80%E6%9C%89%E6%95%B0%E6%8D%AE%EF%BC%9B%E6%AD%A4%E9%80%89%E9%A1%B9%E5%8F%AF%E7%94%A8%E4%BA%8E%E7%A1%AE%E5%AE%9A%E4%BC%A0%E9%80%92%E7%BB%99%E6%AF%8F%E4%B8%AA%E5%87%BD%E6%95%B0%E7%9A%84%E5%8F%82%E6%95%B0%EF%BC%9B%E5%9C%A8-ia64-%E6%9E%B6%E6%9E%84%E4%B8%8A%EF%BC%8C%E5%B0%86%E6%98%BE%E7%A4%BA%E5%8F%82%E6%95%B0%E5%AF%84%E5%AD%98%E5%99%A8%E7%9A%84%E5%86%85%E5%AE%B9%E3%80%82"><span class="nav-text">-f: 显示堆栈帧中包含的所有数据；此选项可用于确定传递给每个函数的参数；在 ia64 架构上，将显示参数寄存器的内容。</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E9%80%89%E9%A1%B9"><span class="nav-text">其他选项:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#l-%E6%98%BE%E7%A4%BA%E6%BA%90%E4%BB%A3%E7%A0%81%E8%A1%8C%E5%8F%B7"><span class="nav-text">-l: 显示源代码行号</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#s-%E6%98%BE%E7%A4%BA%E6%BA%90%E4%BB%A3%E7%A0%81"><span class="nav-text">-s: 显示源代码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#p-%E7%89%A9%E7%90%86%E5%9C%B0%E5%9D%80"><span class="nav-text">-p: 物理地址</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#u-%E7%94%A8%E6%88%B7%E7%A9%BA%E9%97%B4%E8%99%9A%E6%8B%9F%E5%9C%B0%E5%9D%80"><span class="nav-text">-u: 用户空间虚拟地址</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#d-10%E8%BF%9B%E5%88%B6"><span class="nav-text">-d: 10进制</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#s-%E6%98%BE%E7%A4%BA%E7%AC%A6%E5%8F%B7"><span class="nav-text">-s: 显示符号</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#32-32%E4%BD%8D%E5%AE%BD"><span class="nav-text">-32: 32位宽</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#64-64%E4%BD%8D%E5%AE%BD"><span class="nav-text">-64: 64位宽</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#a-ascii%E7%A0%81"><span class="nav-text">-a: ascii码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#a-%E4%B8%AD%E6%96%AD%E4%BA%B2%E5%92%8C%E6%80%A7"><span class="nav-text">-a: 中断亲和性</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#s-%E7%B3%BB%E7%BB%9F%E4%B8%AD%E6%96%AD%E4%BF%A1%E6%81%AF"><span class="nav-text">-s: 系统中断信息</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#p-%E8%99%9A%E6%8B%9F%E5%9C%B0%E5%9D%80%E5%92%8C%E7%89%A9%E7%90%86%E5%9C%B0%E5%9D%80"><span class="nav-text">-p: 虚拟地址和物理地址</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#m-mm-struct"><span class="nav-text">-m: mm_struct</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#R-%E6%90%9C%E7%B4%A2"><span class="nav-text">-R: 搜索</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#v-%E6%89%80%E6%9C%89-vm-area-struct"><span class="nav-text">-v: 所有 vm_area_struct</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#f-num-%E6%98%BE%E7%A4%BAnum%E5%9C%A8vm-flags%E5%AF%B9%E5%BA%94%E7%9A%84%E4%BD%8D"><span class="nav-text">-f num: 显示num在vm_flags对应的位</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#s-%E9%93%BE%E8%A1%A8%E6%88%90%E5%91%98"><span class="nav-text">-s: 链表成员</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#h-%E9%93%BE%E8%A1%A8%E5%A4%B4%E5%9C%B0%E5%9D%80%EF%BC%8C%E8%BF%99%E9%87%8C%E5%8F%AF%E4%BB%A5%E7%94%A8-p-super-blocks-%E8%8E%B7%E5%8F%96"><span class="nav-text">-h: 链表头地址，这里可以用 p super_blocks 获取</span></a></li></ol>
     </div>
 </div>
 

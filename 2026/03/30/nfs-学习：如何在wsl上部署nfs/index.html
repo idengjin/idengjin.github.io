@@ -9,7 +9,7 @@
     
     <title>
         
-            crash工具调试linux内核 |
+            nfs 学习：如何在wsl上部署nfs |
         
         Idengjin&#39;s Blog
     </title>
@@ -186,7 +186,7 @@
             <div class="post-content-bottom border-box">
                 
                     <div class="post-title">
-                        crash工具调试linux内核
+                        nfs 学习：如何在wsl上部署nfs
                     </div>
                 
 
@@ -214,32 +214,17 @@
         
             <span class="meta-info-item post-create-date">
                 <i class="icon fa-solid fa-calendar-plus"></i>&nbsp;
-                <span class="datetime">2025-10-09 02:49:24</span>
+                <span class="datetime">2026-03-30 22:05:40</span>
             </span>
 
             <span class="meta-info-item post-update-date">
                 <i class="icon fa-solid fa-file-pen"></i>&nbsp;
-                <span class="datetime" data-updated="Thu Oct 09 2025 03:31:50 GMT+0800">2025-10-09 03:31:50</span>
+                <span class="datetime" data-updated="Mon Mar 30 2026 23:05:02 GMT+0800">2026-03-30 23:05:02</span>
             </span>
         
 
         
 
-        
-            <span class="post-tag meta-info-item border-box">
-                <ul class="post-tag-ul">
-                    
-                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/crash/">crash</a></li>
-                        
-                    
-                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/%E8%B0%83%E8%AF%95/">调试</a></li>
-                        
-                    
-                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/linux%E5%86%85%E6%A0%B8/">linux内核</a></li>
-                        
-                    
-                </ul>
-            </span>
         
 
         
@@ -263,9 +248,29 @@
                 <div class="post-content keep-markdown-body">
                     
 
-                    <h3 id="crash使用命令"><a href="#crash使用命令" class="headerlink" title="crash使用命令"></a>crash使用命令</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">1.启动与基础信息查询</span><br><span class="line">crash vmlinux vmcore	# 启动 crash，加载调试内核（vmlinux）和崩溃转储（vmcore</span><br><span class="line">help [cmd]	# 查看命令帮助，尤其是复杂命令的参数（如 bt -F、list -s），忘记参数时快速查阅</span><br><span class="line">sys	# 获取系统概览（内核版本、CPU、内存、文件系统），快速了解崩溃时的系统基本状态</span><br><span class="line">version	# 确认 crash 版本、内核版本、转储文件信息（如创建时间）</span><br><span class="line">exit/quit # 退出</span><br><span class="line">log # 查看内核日志缓冲区（printk 输出）， 比如log -l 4（查看 WARNING 及以上级别日志）</span><br><span class="line"></span><br><span class="line">2.进程与调用栈分析（定位崩溃点）</span><br><span class="line">ps	# 列出所有进程的 PID、状态、栈地址，快速定位崩溃时的活跃进程，找到处于 R（运行）或 D（死锁）状态的异常进程</span><br><span class="line">pid [pid] + bt	# 切换到目标进程并打印内核调用栈，分析特定进程崩溃的函数调用链</span><br><span class="line">bt -f / bt -FF	# 显示栈帧中的所有数据（包括函数参数），解析传递给函数的异常参数，定位因参数非法（如空指针、越界值）导致的崩溃</span><br><span class="line">bt -l # 显示栈帧对应的源代码文件名和行号（需调试符号支持），直接定位到内核源码中崩溃的具体行数</span><br><span class="line">task [task_addr]	# 查看 task_struct 详情（状态、内存、打开的文件），分析进程状态异常（如 TASK_KILLABLE 却无法唤醒）</span><br><span class="line"></span><br><span class="line">3.内核数据结构与内存分析</span><br><span class="line">struct [struct_name] [addr] # 解析指定地址的结构体实例，查看成员值，比如struct task_struct 0xffff888003a04000</span><br><span class="line">struct [struct_name] -ox # 以16进制显示结构体成员的偏移量，用于计算内存中成员的实际地址</span><br><span class="line">list [list_head] [struct] [member]	# 遍历内核链表（struct list_head），打印每个节点的结构体实例</span><br><span class="line">list -h [head] -s [member]	# 遍历链表时只显示指定成员（如 super_block-]s_blocksize</span><br><span class="line">hash [table] [bucket] [struct] [member]	# 遍历哈希表（如 dcache 哈希表），分析哈希冲突或异常条目</span><br><span class="line">x [addr] # 以十六进制 / ASCII 格式查看指定地址的内存内容（类似 GDB 的 x），支持指定长度和格式。比如x 0xffff888003a04000（查看 16 字节）；x/100x 0xffff888003a04000（查看 100 字节）</span><br><span class="line">rd [addr] [count]	# 以自然格式读取内存（自动识别类型），查看指定地址的内存内容，用于检查内存是否被篡改（如堆溢出、越界写），比如rd 0xffff888003a04000 10（读取 10 个数据）</span><br><span class="line">vm [pid]	# 查看进程的虚拟地址空间（页表映射、vm_area_struct），用于分析内存泄漏、用户态与内核态地址冲突</span><br><span class="line">kmem -i / kmem -s	# 查看系统内存使用（总内存、slab 缓存），定位内存泄漏或 slab 破坏，用于发现某个 slab 缓存（如 dentry）异常增长</span><br><span class="line"></span><br><span class="line">4.符号与函数调试</span><br><span class="line">sym [addr/name]	# 地址与符号互转（如将崩溃地址转为函数名）用于快速定位崩溃点所在的函数</span><br><span class="line">sym -m [module]	# 查看内核模块的符号表（函数、全局变量）</span><br><span class="line">dis [func] / dis -l [func]	# 反汇编函数，结合 -l 显示对应源码行,用于分析函数内的指令执行流程（如条件分支、循环）</span><br><span class="line">p [var]	# 打印全局变量值（如 jiffies、irq_stat）用于查看系统级变量状态（如中断统计、时间戳）</span><br><span class="line">args [func_name]	# 查看指定函数的参数列表（基于内核符号表）。比如：args sys_open（查看 sys_open 的参数）</span><br><span class="line">call [func_name] [args]	# 实时调试时调用内核函数（仅支持运行中的内核，vmcore 中不可用）。	call printk(&quot;hello&quot;)（调用 printk 输出日志）</span><br><span class="line">retval [addr]	# 查看函数调用的返回值（需结合调用栈，指定栈帧地址）。比如retval 0xffff888003a03f00（查看该栈帧的函数返回值）</span><br><span class="line"></span><br><span class="line">5.中断与模块调试</span><br><span class="line">irq / irq [num]	# 查看中断向量、处理函数、触发次数，定位中断风暴或未处理中断</span><br><span class="line">mod	# 列出所有加载的内核模块，查看模块地址、大小</span><br><span class="line">mod -s [module] [ko] # 手动加载模块符号（当 vmcore 中模块符号缺失时），用于调试第三方模块导致的崩溃</span><br></pre></td></tr></table></figure>
+                    <hr>
+<h2 id="title-nfs-学习：如何在wsl上部署nfsdate-2026-03-30-22-05-40tags"><a href="#title-nfs-学习：如何在wsl上部署nfsdate-2026-03-30-22-05-40tags" class="headerlink" title="title: nfs 学习：如何在wsl上部署nfsdate: 2026-03-30 22:05:40tags:"></a>title: nfs 学习：如何在wsl上部署nfs<br>date: 2026-03-30 22:05:40<br>tags:</h2><h3 id="WSL中部署nfs"><a href="#WSL中部署nfs" class="headerlink" title="WSL中部署nfs"></a>WSL中部署nfs</h3><p>最近想在WSL2中部署nfs来进行nfs源码的阅读和学习。由于手里仅有一台主机，所以想到使用一台主机同时充当server端和client端。WSL2 是支持 NFS（Network File System） 的，但需要进行一些配置才能正常使用。以下是关于在 WSL2 中使用 NFS 的关键说明和步骤：</p>
+<h3 id="配置-NFS-服务-server端"><a href="#配置-NFS-服务-server端" class="headerlink" title="配置 NFS 服务(server端)"></a>配置 NFS 服务(server端)</h3><p>在 WSL2 的 Ubuntu 环境中，可以通过安装和配置 nfs-kernel-server 和 rpcbind 来实现 NFS 服务。以下是基本步骤：</p>
+<ul>
+<li>安装必要组件：<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install nfs-kernel-server rpcbind</span><br></pre></td></tr></table></figure></li>
+<li>创建共享目录：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo mkdir /fs_nfs</span><br><span class="line">sudo chmod 777 /fs_nfs</span><br></pre></td></tr></table></figure></li>
+<li>配置nfs共享导出规则：<br>编辑&#x2F;etc&#x2F;exports 文件，并添加共享目录配置：<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/fs_nfs *(rw,sync,no_root_squash,no_subtree_check)</span><br></pre></td></tr></table></figure></li>
+<li>重启 NFS 服务：<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo exportfs -ar # 重新加载 exportfs 的配置</span><br><span class="line">sudo systemctl restart nfs-kernel-server</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="客户端挂载-NFS"><a href="#客户端挂载-NFS" class="headerlink" title="客户端挂载 NFS"></a>客户端挂载 NFS</h3><p>在客户端（如另一台 Linux 设备, 这里我使用了同一个主机）上，可以通过以下命令挂载 NFS 共享：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo mkdir /mnt/fs_nfs</span><br><span class="line">sudo mount [Server IP]:/fs_nfs /mnt/fs_nfs</span><br></pre></td></tr></table></figure>
+<p>例如：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">root@DESKTOP-JQGRBCD:/home/dj/Blogs# mount -t nfs 127.0.0.1:/fs_nfs /mnt/fs_nfs</span><br><span class="line">root@DESKTOP-JQGRBCD:/home/dj/Blogs#</span><br><span class="line">root@DESKTOP-JQGRBCD:/home/dj/Blogs#</span><br><span class="line">root@DESKTOP-JQGRBCD:/home/dj/Blogs# df -h</span><br><span class="line">Filesystem         Size  Used Avail Use% Mounted on</span><br><span class="line">none               7.8G  4.0K  7.8G   1% /mnt/wsl</span><br><span class="line">drivers            931G   99G  832G  11% /usr/lib/wsl/drivers</span><br><span class="line">/dev/sdd          1007G  3.4G  953G   1% /</span><br><span class="line">E:\                895G  1.5G  893G   1% /mnt/e</span><br><span class="line">tmpfs              7.8G  4.0K  7.8G   1% /run/user/0</span><br><span class="line">127.0.0.1:/fs_nfs 1007G  3.4G  953G   1% /mnt/fs_nfs</span><br></pre></td></tr></table></figure>
 
-<h3 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h3><p>参考博主chenxiaosong <a class="link"   target="_blank" rel="noopener" href="https://chenxiaosong.com/course/kernel/debug.html#kdump-crash" >https://chenxiaosong.com/course/kernel/debug.html#kdump-crash<i class="fas fa-external-link-alt"></i></a></p>
+<p><img  
+                       lazyload
+                       alt="image"
+                       data-src="/image.png"
+                        alt="alt text"
+                 ></p>
+<ul>
+<li>配置自动挂载<br>编辑 &#x2F;etc&#x2F;fstab 文件，添加以下行：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;服务端IP&gt;:&lt;共享&gt;  &lt;挂载点&gt;  nfs  defaults  0  0</span><br><span class="line">e.g.</span><br><span class="line">127.0.0.1:/fs_nfs /mnt/fs_nfs  nfs  defaults  0  0</span><br></pre></td></tr></table></figure></li>
+</ul>
 
                 </div>
                 
@@ -274,11 +279,11 @@
     <div class="copyright-info-content border-box">
         <div class="copyright-info-top border-box">
             <div class="copyright-post-title border-box text-ellipsis">
-                crash工具调试linux内核
+                nfs 学习：如何在wsl上部署nfs
             </div>
 
             <div class="copyright-post-link border-box text-ellipsis">
-                2025/10/09/crash工具调试linux内核/
+                2026/03/30/nfs-学习：如何在wsl上部署nfs/
             </div>
         </div>
 
@@ -294,7 +299,7 @@
                 <div class="type">
                     Published
                 </div>
-                <div class="content">2025-10-09 02:49</div>
+                <div class="content">2026-03-30 22:05</div>
             </div>
 
 
@@ -326,22 +331,6 @@
 
                 <div class="post-bottom-tags-and-share border-box">
                     <div>
-                        
-                            <ul class="post-tags-box border-box">
-                                
-                                    <li class="tag-item border-box">
-                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/crash/">crash</a>
-                                    </li>
-                                
-                                    <li class="tag-item border-box">
-                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/%E8%B0%83%E8%AF%95/">调试</a>
-                                    </li>
-                                
-                                    <li class="tag-item border-box">
-                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/linux%E5%86%85%E6%A0%B8/">linux内核</a>
-                                    </li>
-                                
-                            </ul>
                         
                     </div>
                     <div>
@@ -377,31 +366,15 @@
                 
                     <div class="post-nav border-box">
                         
-                            <div class="prev-post">
-                                <a class="prev"
-                                   rel="prev"
-                                   href="/2026/03/30/nfs-%E5%AD%A6%E4%B9%A0%EF%BC%9A%E5%A6%82%E4%BD%95%E5%9C%A8wsl%E4%B8%8A%E9%83%A8%E7%BD%B2nfs/"
-                                   title="nfs 学习：如何在wsl上部署nfs"
-                                >
-                                    <span class="left arrow-icon flex-center">
-                                        <i class="fas fa-chevron-left"></i>
-                                    </span>
-                                    <span class="title flex-center">
-                                        <span class="post-nav-title-item text-ellipsis">nfs 学习：如何在wsl上部署nfs</span>
-                                        <span class="post-nav-item">Prev posts</span>
-                                    </span>
-                                </a>
-                            </div>
-                        
                         
                             <div class="next-post">
                                 <a class="next"
                                    rel="next"
-                                   href="/2025/10/09/hello-world/"
-                                   title="Hello World"
+                                   href="/2025/10/09/crash%E5%B7%A5%E5%85%B7%E8%B0%83%E8%AF%95linux%E5%86%85%E6%A0%B8/"
+                                   title="crash工具调试linux内核"
                                 >
                                     <span class="title flex-center">
-                                        <span class="post-nav-title-item text-ellipsis">Hello World</span>
+                                        <span class="post-nav-title-item text-ellipsis">crash工具调试linux内核</span>
                                         <span class="post-nav-item">Next posts</span>
                                     </span>
                                     <span class="right arrow-icon flex-center">
@@ -429,7 +402,7 @@
             <div class="pc-post-toc right-toc">
                 <div class="post-toc-wrap border-box">
     <div class="post-toc border-box">
-        <ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#crash%E4%BD%BF%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="nav-text">crash使用命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BE%8B%E5%AD%90"><span class="nav-text">例子</span></a></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#title-nfs-%E5%AD%A6%E4%B9%A0%EF%BC%9A%E5%A6%82%E4%BD%95%E5%9C%A8wsl%E4%B8%8A%E9%83%A8%E7%BD%B2nfsdate-2026-03-30-22-05-40tags"><span class="nav-text">title: nfs 学习：如何在wsl上部署nfsdate: 2026-03-30 22:05:40tags:</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#WSL%E4%B8%AD%E9%83%A8%E7%BD%B2nfs"><span class="nav-text">WSL中部署nfs</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE-NFS-%E6%9C%8D%E5%8A%A1-server%E7%AB%AF"><span class="nav-text">配置 NFS 服务(server端)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%8C%82%E8%BD%BD-NFS"><span class="nav-text">客户端挂载 NFS</span></a></li></ol></li></ol>
     </div>
 </div>
 
@@ -609,7 +582,7 @@
             <div class="tablet-post-toc">
                 <div class="post-toc-wrap border-box">
     <div class="post-toc border-box">
-        <ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#crash%E4%BD%BF%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="nav-text">crash使用命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BE%8B%E5%AD%90"><span class="nav-text">例子</span></a></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#title-nfs-%E5%AD%A6%E4%B9%A0%EF%BC%9A%E5%A6%82%E4%BD%95%E5%9C%A8wsl%E4%B8%8A%E9%83%A8%E7%BD%B2nfsdate-2026-03-30-22-05-40tags"><span class="nav-text">title: nfs 学习：如何在wsl上部署nfsdate: 2026-03-30 22:05:40tags:</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#WSL%E4%B8%AD%E9%83%A8%E7%BD%B2nfs"><span class="nav-text">WSL中部署nfs</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE-NFS-%E6%9C%8D%E5%8A%A1-server%E7%AB%AF"><span class="nav-text">配置 NFS 服务(server端)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%8C%82%E8%BD%BD-NFS"><span class="nav-text">客户端挂载 NFS</span></a></li></ol></li></ol>
     </div>
 </div>
 

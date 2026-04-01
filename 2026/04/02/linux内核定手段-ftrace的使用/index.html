@@ -219,7 +219,7 @@
 
             <span class="meta-info-item post-update-date">
                 <i class="icon fa-solid fa-file-pen"></i>&nbsp;
-                <span class="datetime" data-updated="Thu Apr 02 2026 01:10:45 GMT+0800">2026-04-02 01:10:45</span>
+                <span class="datetime" data-updated="Thu Apr 02 2026 01:14:27 GMT+0800">2026-04-02 01:14:27</span>
             </span>
         
 
@@ -311,6 +311,7 @@
 <p>ftrace Framework core: 其主要包括利用 debugfs 系统在 &#x2F;debugfs 下建立 tracing 目录，对用户空间输出 trace 信息，并提供了一系列的控制文件<br>一系列的 tracer： 每个 tracer 完成不同的功能，ftrace 的 trace 信息保存在 ring buffer(内存缓冲区) 中，它们统一由 framework 管理<br>对于ftrace有两种主要的跟踪机制往缓冲区写数据</p>
 <p><strong>动态探针：</strong> 可以动态跟踪内核函数的调用栈，包括function tracr，function graph trace两个tracer。其原理是利用mcount机制，在内核编译时，在每个函数入口保留数个字节，然后在使用ftrace时，将保留的字节替换为需要的指令，比如跳转到需要的执行探测操作的代码。</p>
 <p><strong>静态探针：</strong> 是在内核代码中调用ftrace提供的相应接口实现，称之为静态是因为，是在内核代码中写死的，静态编译到内核代码中的，在内核编译后，就不能再动态修改。在开启ftrace相关的内核配置选项后，内核中已经在一些关键的地方设置了静态探测点，需要使用时，即可查看到相应的信息。<br>ftrace利用了gcc的profile特性，gcc 的 -pg 选项将在每个函数的入口处加入对mcount的代码调用。</p>
+<p>参考：<a class="link"   target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/2779058402?utm_psn=2022799589741208655" >linux性能分析工具–ftrace的原理与使用<i class="fas fa-external-link-alt"></i></a></p>
 
                 </div>
                 

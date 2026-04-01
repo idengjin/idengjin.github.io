@@ -9,7 +9,7 @@
     
     <title>
         
-            Hello World |
+            linux内核定手段--ftrace的使用 |
         
         Idengjin&#39;s Blog
     </title>
@@ -186,7 +186,7 @@
             <div class="post-content-bottom border-box">
                 
                     <div class="post-title">
-                        Hello World
+                        linux内核定手段--ftrace的使用
                     </div>
                 
 
@@ -214,12 +214,12 @@
         
             <span class="meta-info-item post-create-date">
                 <i class="icon fa-solid fa-calendar-plus"></i>&nbsp;
-                <span class="datetime">2026-03-31 00:35:14</span>
+                <span class="datetime">2026-04-02 01:10:14</span>
             </span>
 
             <span class="meta-info-item post-update-date">
                 <i class="icon fa-solid fa-file-pen"></i>&nbsp;
-                <span class="datetime" data-updated="Tue Mar 31 2026 00:35:14 GMT+0800">2026-03-31 00:35:14</span>
+                <span class="datetime" data-updated="Thu Apr 02 2026 01:10:45 GMT+0800">2026-04-02 01:10:45</span>
             </span>
         
 
@@ -248,44 +248,69 @@
                 <div class="post-content keep-markdown-body">
                     
 
-                    <p>Welcome to <a class="link"   target="_blank" rel="noopener" href="https://hexo.io/" >Hexo<i class="fas fa-external-link-alt"></i></a>! This is your very first post. Check <a class="link"   target="_blank" rel="noopener" href="https://hexo.io/docs/" >documentation<i class="fas fa-external-link-alt"></i></a> for more info. If you get any problems when using Hexo, you can find the answer in <a class="link"   target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html" >troubleshooting<i class="fas fa-external-link-alt"></i></a> or you can ask me on <a class="link"   target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues" >GitHub<i class="fas fa-external-link-alt"></i></a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="创建新文章"><a href="#创建新文章" class="headerlink" title="创建新文章"></a>创建新文章</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a class="link"   target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html" >Writing<i class="fas fa-external-link-alt"></i></a></p>
+                    <h3 id="ftrace-是什么"><a href="#ftrace-是什么" class="headerlink" title="ftrace 是什么"></a>ftrace 是什么</h3><p>ftrace即function trace,通过插桩来分析内核函数的调用流程、函数调用耗时。</p>
+<h3 id="ftrace的使用"><a href="#ftrace的使用" class="headerlink" title="ftrace的使用"></a>ftrace的使用</h3><p>准备工作</p>
+<ol>
+<li>挂载 debugfs&#x2F;tracefs</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mount -t debugfs debugfs /sys/kernel/debug</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>设置tracer类型</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cat /sys/kernel/debug/tracing/available_tracers # 查看可用tracer</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash"><span class="keyword">function</span>	函数调用追踪器，可以看出哪个函数何时调用，可以通过过滤器指定要跟踪的函数</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">function_graph	函数调用图表追踪器，可以看出哪个函数被哪个函数调用，何时返回</span></span><br><span class="line">echo function_graph &gt; /sys/kernel/debug/tracing/current_tracer # 设置tracer</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>使能tracer</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo 1 &gt; /sys/kernel/debug/tracing/tracing_on</span><br></pre></td></tr></table></figure>
+<ol start="4">
+<li>查看结果</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cat /sys/kernel/debug/tracing/trace</span><br><span class="line">或者</span><br><span class="line">cat /sys/kernel/debug/tracing/trace_pipe</span><br></pre></td></tr></table></figure>
+<ol start="5">
+<li>停止与清空</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">echo 0 &gt; /sys/kernel/debug/tracing/tracing_on</span><br><span class="line">echo &gt; /sys/kernel/debug/tracing/trace</span><br></pre></td></tr></table></figure>
+<p>总结起来，ftrace使用的三步法为：</p>
 <ul>
-<li>Run server</li>
+<li>设置tracer类型</li>
+<li>设置tracer参数</li>
+<li>使能tracer<br>下面是使用事例：</li>
 </ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a class="link"   target="_blank" rel="noopener" href="https://hexo.io/docs/server.html" >Server<i class="fas fa-external-link-alt"></i></a></p>
-<ul>
-<li>生成hexo部署的静态文件（比如html）</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a class="link"   target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html" >Generating<i class="fas fa-external-link-alt"></i></a></p>
-<ul>
-<li>部署</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a class="link"   target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html" >Deployment<i class="fas fa-external-link-alt"></i></a></p>
-<h3 id="插入图片"><a href="#插入图片" class="headerlink" title="插入图片"></a>插入图片</h3><p>使用文章资源文件夹的方式引用图片：</p>
-<ul>
-<li>依赖安装</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-renderer-marked</span><br></pre></td></tr></table></figure>
-<ul>
-<li>启用 post_asset_folder</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">_config.yml</span><br><span class="line"></span><br><span class="line">post_asset_folder: true</span><br><span class="line">marked:</span><br><span class="line">  prependRoot: true</span><br><span class="line">  postAsset: true</span><br></pre></td></tr></table></figure>
-<ul>
-<li>图片引用<br>执行：<br>hexo new “文章标题”<br>生成结构：</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">source/_posts/</span><br><span class="line">├── 文章标题.md</span><br><span class="line">└── 文章标题/</span><br><span class="line">└── photo.jpg</span><br></pre></td></tr></table></figure>
-<p>在 Markdown 中使用相对位置来引用图片：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">![wsl挂载nfs共享](./nfs_mount_image.png)</span><br></pre></td></tr></table></figure>
-<p>启用后，资源图片将会被自动解析为其对应文章的路径。 例如： nfs_mount_image.png 位置为 &#x2F;2020&#x2F;01&#x2F;02&#x2F;foo&#x2F;nfs_mount_imagel.png ，这表示它是 &#x2F;2020&#x2F;01&#x2F;02&#x2F;foo&#x2F; 文章的一张资源图片， ![](nfs_mount_image.png) 将会被解析为 &lt;img src&#x3D;&quot;&#x2F;2020&#x2F;01&#x2F;02&#x2F;foo&#x2F;nfs_mount_image.png&quot;&gt;<br>参考: <a class="link"   target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/asset-folders#%E4%BD%BF%E7%94%A8-Markdown-%E5%B5%8C%E5%85%A5%E5%9B%BE%E7%89%87" >hexo资源管理<i class="fas fa-external-link-alt"></i></a></p>
+<h4 id="1-抓取函数调用流程"><a href="#1-抓取函数调用流程" class="headerlink" title="1.抓取函数调用流程"></a>1.抓取函数调用流程</h4><p>比如我想获取nfs_writepages这个函数的调用流程</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">mount -t debugfs debugfs /sys/kernel/debug</span><br><span class="line">cd /sys/kernel/debug/tracing</span><br><span class="line">echo 0 &gt; tracing_on</span><br><span class="line">echo &gt; trace</span><br><span class="line">echo function_graph &gt; current_tracer</span><br><span class="line">echo &gt; set_ftrace_filter</span><br><span class="line">echo nfs_writepages &gt; set_graph_function </span><br><span class="line">echo 1 &gt; tracing_on</span><br><span class="line">cat trace_pipe</span><br></pre></td></tr></table></figure>
+<p><img  
+                       lazyload
+                       alt="image"
+                       data-src="/2024/03/26/Hexo-Github-Ubuntu%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/tion_graph.png"
+                        alt="function_graph trace"
+                 ></p>
+<h4 id="2-抓取函数被调用流程"><a href="#2-抓取函数被调用流程" class="headerlink" title="2.抓取函数被调用流程"></a>2.抓取函数被调用流程</h4><p>比如我想获取nfs_writepages这个函数的被调用流程</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">cd /sys/kernel/debug/tracing</span><br><span class="line">echo 0 &gt; tracing_on</span><br><span class="line">echo &gt; trace</span><br><span class="line">echo nfs_writepages &gt; set_ftrace_filter</span><br><span class="line">echo function &gt; current_tracer</span><br><span class="line">echo 1 &gt; options/func_stack_trace</span><br><span class="line">echo 1 &gt; tracing_on</span><br><span class="line">cat trace_pipe</span><br></pre></td></tr></table></figure>
+<p><img  
+                       lazyload
+                       alt="image"
+                       data-src="/2024/03/26/Hexo-Github-Ubuntu%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/tion_trace.png"
+                        alt="function trace"
+                 ></p>
+<h4 id="3-trace-event"><a href="#3-trace-event" class="headerlink" title="3.trace event"></a>3.trace event</h4><p>&#x2F;sys&#x2F;kernel&#x2F;debug&#x2F;tracing&#x2F;events&#x2F;下定义了静态的trace event(内核模块的公共定位点)，只需要往对应的trace event中的enable写入1就可以打开。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">cd /sys/kernel/debug/tracing</span><br><span class="line">echo nop &gt; current_tracer</span><br><span class="line">echo 0 &gt; tracing_on</span><br><span class="line">echo &gt; trace</span><br><span class="line">echo 1 &gt; /sys/kernel/debug/tracing/events/nfs/nfs_writeback_done/enable</span><br><span class="line">echo 1 &gt; tracing_on</span><br><span class="line">cat trace_pipe</span><br></pre></td></tr></table></figure>
+<p><img  
+                       lazyload
+                       alt="image"
+                       data-src="/2024/03/26/Hexo-Github-Ubuntu%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/e_event.png"
+                        alt="trace event"
+                 ></p>
+<h3 id="ftrace原理"><a href="#ftrace原理" class="headerlink" title="ftrace原理"></a>ftrace原理</h3><p>function trace是利用gcc编译器在编译时在每个函数的入口地址放置一个probe点，这个probe点会调用一个probe函数（gcc默认调用名为mcount的函数），这样这个 probe函数会对每个执行的内核函数进行跟踪（其实有少数几个内核函数不会被跟踪），并打印log到一个内核中的环形缓存（ring buffer）中，而用户可以通过debugfs来访问这个环形缓存中的内容。</p>
+<p>各类tracer往ftrace主框架注册，不同的trace则在不同的probe点把信息通过probe函数给送到ring buffer中，再由暴露在用户态debufs实现相关控制。其主要的框架图如下图所示</p>
+<p><img  
+                       lazyload
+                       alt="image"
+                       data-src="/2024/03/26/Hexo-Github-Ubuntu%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/ce_frame.png"
+                        alt="ftrace frame"
+                 ><br>其主要由两部分构成</p>
+<p>ftrace Framework core: 其主要包括利用 debugfs 系统在 &#x2F;debugfs 下建立 tracing 目录，对用户空间输出 trace 信息，并提供了一系列的控制文件<br>一系列的 tracer： 每个 tracer 完成不同的功能，ftrace 的 trace 信息保存在 ring buffer(内存缓冲区) 中，它们统一由 framework 管理<br>对于ftrace有两种主要的跟踪机制往缓冲区写数据</p>
+<p><strong>动态探针：</strong> 可以动态跟踪内核函数的调用栈，包括function tracr，function graph trace两个tracer。其原理是利用mcount机制，在内核编译时，在每个函数入口保留数个字节，然后在使用ftrace时，将保留的字节替换为需要的指令，比如跳转到需要的执行探测操作的代码。</p>
+<p><strong>静态探针：</strong> 是在内核代码中调用ftrace提供的相应接口实现，称之为静态是因为，是在内核代码中写死的，静态编译到内核代码中的，在内核编译后，就不能再动态修改。在开启ftrace相关的内核配置选项后，内核中已经在一些关键的地方设置了静态探测点，需要使用时，即可查看到相应的信息。<br>ftrace利用了gcc的profile特性，gcc 的 -pg 选项将在每个函数的入口处加入对mcount的代码调用。</p>
 
                 </div>
                 
@@ -294,11 +319,11 @@
     <div class="copyright-info-content border-box">
         <div class="copyright-info-top border-box">
             <div class="copyright-post-title border-box text-ellipsis">
-                Hello World
+                linux内核定手段--ftrace的使用
             </div>
 
             <div class="copyright-post-link border-box text-ellipsis">
-                2026/03/31/hello-world/
+                2026/04/02/linux内核定手段-ftrace的使用/
             </div>
         </div>
 
@@ -314,7 +339,7 @@
                 <div class="type">
                     Published
                 </div>
-                <div class="content">2026-03-31 00:35</div>
+                <div class="content">2026-04-02 01:10</div>
             </div>
 
 
@@ -381,31 +406,15 @@
                 
                     <div class="post-nav border-box">
                         
-                            <div class="prev-post">
-                                <a class="prev"
-                                   rel="prev"
-                                   href="/2026/04/02/linux%E5%86%85%E6%A0%B8%E5%AE%9A%E6%89%8B%E6%AE%B5-ftrace%E7%9A%84%E4%BD%BF%E7%94%A8/"
-                                   title="linux内核定手段--ftrace的使用"
-                                >
-                                    <span class="left arrow-icon flex-center">
-                                        <i class="fas fa-chevron-left"></i>
-                                    </span>
-                                    <span class="title flex-center">
-                                        <span class="post-nav-title-item text-ellipsis">linux内核定手段--ftrace的使用</span>
-                                        <span class="post-nav-item">Prev posts</span>
-                                    </span>
-                                </a>
-                            </div>
-                        
                         
                             <div class="next-post">
                                 <a class="next"
                                    rel="next"
-                                   href="/2026/03/30/nfs-%E5%AD%A6%E4%B9%A0%EF%BC%9A%E5%A6%82%E4%BD%95%E5%9C%A8wsl%E4%B8%8A%E9%83%A8%E7%BD%B2nfs/"
-                                   title="nfs 学习：如何在wsl上部署nfs"
+                                   href="/2026/03/31/hello-world/"
+                                   title="Hello World"
                                 >
                                     <span class="title flex-center">
-                                        <span class="post-nav-title-item text-ellipsis">nfs 学习：如何在wsl上部署nfs</span>
+                                        <span class="post-nav-title-item text-ellipsis">Hello World</span>
                                         <span class="post-nav-item">Next posts</span>
                                     </span>
                                     <span class="right arrow-icon flex-center">
@@ -433,7 +442,7 @@
             <div class="pc-post-toc right-toc">
                 <div class="post-toc-wrap border-box">
     <div class="post-toc border-box">
-        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Quick-Start"><span class="nav-text">Quick Start</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E6%96%B0%E6%96%87%E7%AB%A0"><span class="nav-text">创建新文章</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8F%92%E5%85%A5%E5%9B%BE%E7%89%87"><span class="nav-text">插入图片</span></a></li></ol></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#ftrace-%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-text">ftrace 是什么</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ftrace%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="nav-text">ftrace的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E6%8A%93%E5%8F%96%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8%E6%B5%81%E7%A8%8B"><span class="nav-text">1.抓取函数调用流程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E6%8A%93%E5%8F%96%E5%87%BD%E6%95%B0%E8%A2%AB%E8%B0%83%E7%94%A8%E6%B5%81%E7%A8%8B"><span class="nav-text">2.抓取函数被调用流程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-trace-event"><span class="nav-text">3.trace event</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ftrace%E5%8E%9F%E7%90%86"><span class="nav-text">ftrace原理</span></a></li></ol>
     </div>
 </div>
 
@@ -613,7 +622,7 @@
             <div class="tablet-post-toc">
                 <div class="post-toc-wrap border-box">
     <div class="post-toc border-box">
-        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Quick-Start"><span class="nav-text">Quick Start</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E6%96%B0%E6%96%87%E7%AB%A0"><span class="nav-text">创建新文章</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8F%92%E5%85%A5%E5%9B%BE%E7%89%87"><span class="nav-text">插入图片</span></a></li></ol></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#ftrace-%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-text">ftrace 是什么</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ftrace%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="nav-text">ftrace的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E6%8A%93%E5%8F%96%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8%E6%B5%81%E7%A8%8B"><span class="nav-text">1.抓取函数调用流程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E6%8A%93%E5%8F%96%E5%87%BD%E6%95%B0%E8%A2%AB%E8%B0%83%E7%94%A8%E6%B5%81%E7%A8%8B"><span class="nav-text">2.抓取函数被调用流程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-trace-event"><span class="nav-text">3.trace event</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ftrace%E5%8E%9F%E7%90%86"><span class="nav-text">ftrace原理</span></a></li></ol>
     </div>
 </div>
 

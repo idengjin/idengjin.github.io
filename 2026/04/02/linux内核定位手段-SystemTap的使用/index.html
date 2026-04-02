@@ -9,7 +9,7 @@
     
     <title>
         
-            linux内核定位手段--ftrace的使用 |
+            linux内核定位手段--SystemTap的使用 |
         
         Idengjin&#39;s Blog
     </title>
@@ -186,7 +186,7 @@
             <div class="post-content-bottom border-box">
                 
                     <div class="post-title">
-                        linux内核定位手段--ftrace的使用
+                        linux内核定位手段--SystemTap的使用
                     </div>
                 
 
@@ -214,12 +214,12 @@
         
             <span class="meta-info-item post-create-date">
                 <i class="icon fa-solid fa-calendar-plus"></i>&nbsp;
-                <span class="datetime">2026-04-02 01:10:14</span>
+                <span class="datetime">2026-04-02 20:13:12</span>
             </span>
 
             <span class="meta-info-item post-update-date">
                 <i class="icon fa-solid fa-file-pen"></i>&nbsp;
-                <span class="datetime" data-updated="Thu Apr 02 2026 01:37:54 GMT+0800">2026-04-02 01:37:54</span>
+                <span class="datetime" data-updated="Fri Apr 03 2026 00:15:20 GMT+0800">2026-04-03 00:15:20</span>
             </span>
         
 
@@ -248,70 +248,51 @@
                 <div class="post-content keep-markdown-body">
                     
 
-                    <h3 id="ftrace-是什么"><a href="#ftrace-是什么" class="headerlink" title="ftrace 是什么"></a>ftrace 是什么</h3><p>ftrace即function trace,通过插桩来分析内核函数的调用流程、函数调用耗时。</p>
-<h3 id="ftrace的使用"><a href="#ftrace的使用" class="headerlink" title="ftrace的使用"></a>ftrace的使用</h3><p>准备工作</p>
+                    <h3 id="SystemTap-使用步骤"><a href="#SystemTap-使用步骤" class="headerlink" title="SystemTap 使用步骤"></a>SystemTap 使用步骤</h3><p>SystemTap 是一款强大的 Linux 内核调试和性能分析工具，能够动态监控内核和用户空间的行为。以下是使用 SystemTap 的基本步骤。</p>
 <ol>
-<li>挂载 debugfs&#x2F;tracefs</li>
+<li>安装 SystemTap</li>
 </ol>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mount -t debugfs debugfs /sys/kernel/debug</span><br></pre></td></tr></table></figure>
+<p>在大多数 Linux 发行版中，可以通过包管理器安装 SystemTap：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">对于 Ubuntu/Debian</span></span><br><span class="line">sudo apt-get install systemtap</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">对于 CentOS/RHEL</span></span><br><span class="line">sudo yum install systemtap</span><br></pre></td></tr></table></figure>
+<p>安装完成后，确保内核调试信息已启用。如果需要调试内核，请安装对应的调试内核镜像。</p>
 <ol start="2">
-<li>设置tracer类型</li>
+<li>测试环境是否正常</li>
 </ol>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cat /sys/kernel/debug/tracing/available_tracers # 查看可用tracer</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash"><span class="keyword">function</span>	函数调用追踪器，可以看出哪个函数何时调用，可以通过过滤器指定要跟踪的函数</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">function_graph	函数调用图表追踪器，可以看出哪个函数被哪个函数调用，何时返回</span></span><br><span class="line">echo function_graph &gt; /sys/kernel/debug/tracing/current_tracer # 设置tracer</span><br></pre></td></tr></table></figure>
+<p>运行以下命令测试 SystemTap 是否正常工作：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo stap -ve &#x27;probe begin &#123; log(&quot;hello world&quot;) exit() &#125;&#x27;</span><br></pre></td></tr></table></figure>
+<p>如果输出 hello world，说明安装成功。</p>
 <ol start="3">
-<li>使能tracer</li>
+<li>编写 SystemTap 脚本</li>
 </ol>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo 1 &gt; /sys/kernel/debug/tracing/tracing_on</span><br></pre></td></tr></table></figure>
+<p>SystemTap 脚本由探针（probe）和处理逻辑组成。以下是一个简单示例，用于监控 open 系统调用：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">!/usr/bin/env stap</span></span><br><span class="line"></span><br><span class="line">probe syscall.open &#123;</span><br><span class="line">printf(&quot;%s(%d) opened file: %s\n&quot;, execname(), pid(), argstr)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">probe timer.ms(4000) &#123;</span><br><span class="line">exit()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>将脚本保存为 example.stp，并赋予执行权限：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chmod +x example.stp</span><br></pre></td></tr></table></figure>
 <ol start="4">
-<li>查看结果</li>
+<li>以 root 权限运行脚本：</li>
 </ol>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cat /sys/kernel/debug/tracing/trace</span><br><span class="line">或者</span><br><span class="line">cat /sys/kernel/debug/tracing/trace_pipe</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo ./example.stp</span><br></pre></td></tr></table></figure>
+<p>此脚本将在 4 秒内捕获所有 open 系统调用的信息。</p>
 <ol start="5">
-<li>停止与清空</li>
+<li>常用命令</li>
 </ol>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">echo 0 &gt; /sys/kernel/debug/tracing/tracing_on</span><br><span class="line">echo &gt; /sys/kernel/debug/tracing/trace</span><br></pre></td></tr></table></figure>
-<p>总结起来，ftrace使用的三步法为：</p>
-<ul>
-<li>设置tracer类型</li>
-<li>设置tracer参数</li>
-<li>使能tracer<br>下面是使用示例：</li>
-</ul>
-<h4 id="1-抓取函数调用流程"><a href="#1-抓取函数调用流程" class="headerlink" title="1.抓取函数调用流程"></a>1.抓取函数调用流程</h4><p>比如我想获取nfs_writepages这个函数的调用流程</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">mount -t debugfs debugfs /sys/kernel/debug</span><br><span class="line">cd /sys/kernel/debug/tracing</span><br><span class="line">echo 0 &gt; tracing_on</span><br><span class="line">echo &gt; trace</span><br><span class="line">echo function_graph &gt; current_tracer</span><br><span class="line">echo &gt; set_ftrace_filter</span><br><span class="line">echo nfs_writepages &gt; set_graph_function </span><br><span class="line">echo 1 &gt; tracing_on</span><br><span class="line">cat trace_pipe</span><br></pre></td></tr></table></figure>
-<p><img  
+<p>列出可用的探针点：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">stap -l &#x27;syscall.*&#x27;</span><br></pre></td></tr></table></figure>
+<p>查看探针点支持的变量：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">stap -L &#x27;syscall.open&#x27;</span><br></pre></td></tr></table></figure>
+<ol start="6">
+<li>注意事项与最佳实践</li>
+</ol>
+<p>确保内核调试信息已启用，否则部分功能可能无法使用。</p>
+<p>使用 stap -v 查看详细的运行日志，便于排查问题。</p>
+<p>避免在生产环境中运行高开销的脚本，以免影响系统性能。</p>
+<h3 id="SystemTap原理"><a href="#SystemTap原理" class="headerlink" title="SystemTap原理"></a>SystemTap原理</h3><p>SystemTap使用了类似C语言的语法来编写脚本（通常以.stp后缀明明）。脚本语言会先解析成C语言，接下来会将脚本重新编译成内核ko（这个过程需要内核符号表），最后这个ko会被插入内核，当内核捕获了SystemTap中的探测事件，内核ko上的句柄函数就会被执行。至此，调试内核时就不需要重新编译内核，省下许多重复步骤。<br><img  
                        lazyload
                        alt="image"
-                       data-src="/2024/03/26/Hexo-Github-Ubuntu%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/ction_graph.png"
-                        alt="function_graph trace"
-                 ></p>
-<h4 id="2-抓取函数被调用流程"><a href="#2-抓取函数被调用流程" class="headerlink" title="2.抓取函数被调用流程"></a>2.抓取函数被调用流程</h4><p>比如我想获取nfs_writepages这个函数的被调用流程</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">cd /sys/kernel/debug/tracing</span><br><span class="line">echo 0 &gt; tracing_on</span><br><span class="line">echo &gt; trace</span><br><span class="line">echo nfs_writepages &gt; set_ftrace_filter</span><br><span class="line">echo function &gt; current_tracer</span><br><span class="line">echo 1 &gt; options/func_stack_trace</span><br><span class="line">echo 1 &gt; tracing_on</span><br><span class="line">cat trace_pipe</span><br></pre></td></tr></table></figure>
-<p><img  
-                       lazyload
-                       alt="image"
-                       data-src="/2024/03/26/Hexo-Github-Ubuntu%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/ction_trace.png"
-                        alt="function trace"
-                 ></p>
-<h4 id="3-trace-event"><a href="#3-trace-event" class="headerlink" title="3.trace event"></a>3.trace event</h4><p>&#x2F;sys&#x2F;kernel&#x2F;debug&#x2F;tracing&#x2F;events&#x2F;下定义了静态的trace event(内核模块的公共定位点)，只需要往对应的trace event中的enable写入1就可以打开。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">cd /sys/kernel/debug/tracing</span><br><span class="line">echo nop &gt; current_tracer</span><br><span class="line">echo 0 &gt; tracing_on</span><br><span class="line">echo &gt; trace</span><br><span class="line">echo 1 &gt; /sys/kernel/debug/tracing/events/nfs/nfs_writeback_done/enable</span><br><span class="line">echo 1 &gt; tracing_on</span><br><span class="line">cat trace_pipe</span><br></pre></td></tr></table></figure>
-<p><img  
-                       lazyload
-                       alt="image"
-                       data-src="/2024/03/26/Hexo-Github-Ubuntu%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/ce_event.png"
-                        alt="trace event"
-                 ></p>
-<h3 id="ftrace原理"><a href="#ftrace原理" class="headerlink" title="ftrace原理"></a>ftrace原理</h3><p>function trace是利用gcc编译器在编译时在每个函数的入口地址放置一个probe点，这个probe点会调用一个probe函数（gcc默认调用名为mcount的函数），这样这个 probe函数会对每个执行的内核函数进行跟踪（其实有少数几个内核函数不会被跟踪），并打印log到一个内核中的环形缓存（ring buffer）中，而用户可以通过debugfs来访问这个环形缓存中的内容。</p>
-<p>各类tracer往ftrace主框架注册，不同的trace则在不同的probe点把信息通过probe函数给送到ring buffer中，再由暴露在用户态debufs实现相关控制。其主要的框架图如下图所示</p>
-<p><img  
-                       lazyload
-                       alt="image"
-                       data-src="/2024/03/26/Hexo-Github-Ubuntu%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/ace_frame.png"
-                        alt="ftrace frame"
-                 ><br>其主要由两部分构成</p>
-<p>ftrace Framework core: 其主要包括利用 debugfs 系统在 &#x2F;debugfs 下建立 tracing 目录，对用户空间输出 trace 信息，并提供了一系列的控制文件<br>一系列的 tracer： 每个 tracer 完成不同的功能，ftrace 的 trace 信息保存在 ring buffer(内存缓冲区) 中，它们统一由 framework 管理<br>对于ftrace有两种主要的跟踪机制往缓冲区写数据</p>
-<p><strong>动态探针：</strong> 可以动态跟踪内核函数的调用栈，包括function tracr，function graph trace两个tracer。其原理是利用mcount机制，在内核编译时，在每个函数入口保留数个字节，然后在使用ftrace时，将保留的字节替换为需要的指令，比如跳转到需要的执行探测操作的代码。</p>
-<p><strong>静态探针：</strong> 是在内核代码中调用ftrace提供的相应接口实现，称之为静态是因为，是在内核代码中写死的，静态编译到内核代码中的，在内核编译后，就不能再动态修改。在开启ftrace相关的内核配置选项后，内核中已经在一些关键的地方设置了静态探测点，需要使用时，即可查看到相应的信息。<br>ftrace利用了gcc的profile特性，gcc 的 -pg 选项将在每个函数的入口处加入对mcount的代码调用。</p>
-<p>参考：<a class="link"   target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/2779058402?utm_psn=2022799589741208655" >linux性能分析工具–ftrace的原理与使用<i class="fas fa-external-link-alt"></i></a></p>
+                       data-src="/image.png"
+                        alt="alt text"
+                 ><br>systemtap 的核心思想是定义一个事件（event），以及给出处理该事件的句柄（Handler）。当一个特定的事件发生时，内核运行该处理句柄，就像快速调用一个子函数一样，处理完之后恢复到内核原始状态。这里有两个概念：</p>
+<p>事件（Event）：systemtap 定义了很多种事件，例如进入或退出某个内核函数、定时器时间到、整个systemtap会话启动或退出等等。<br>句柄（Handler）：就是一些脚本语句，描述了当事件发生时要完成的工作，通常是从事件的上下文提取数据，将它们存入内部变量中，或者打印出来。<br>因此编写systemtap脚本就是一个找到符合需求的事件，并编写事件处理流程的过程。</p>
 
                 </div>
                 
@@ -320,11 +301,11 @@
     <div class="copyright-info-content border-box">
         <div class="copyright-info-top border-box">
             <div class="copyright-post-title border-box text-ellipsis">
-                linux内核定位手段--ftrace的使用
+                linux内核定位手段--SystemTap的使用
             </div>
 
             <div class="copyright-post-link border-box text-ellipsis">
-                2026/04/02/linux内核定位手段-ftrace的使用/
+                2026/04/02/linux内核定位手段-SystemTap的使用/
             </div>
         </div>
 
@@ -340,7 +321,7 @@
                 <div class="type">
                     Published
                 </div>
-                <div class="content">2026-04-02 01:10</div>
+                <div class="content">2026-04-02 20:13</div>
             </div>
 
 
@@ -407,31 +388,15 @@
                 
                     <div class="post-nav border-box">
                         
-                            <div class="prev-post">
-                                <a class="prev"
-                                   rel="prev"
-                                   href="/2026/04/02/linux%E5%86%85%E6%A0%B8%E5%AE%9A%E4%BD%8D%E6%89%8B%E6%AE%B5-SystemTap%E7%9A%84%E4%BD%BF%E7%94%A8/"
-                                   title="linux内核定位手段--SystemTap的使用"
-                                >
-                                    <span class="left arrow-icon flex-center">
-                                        <i class="fas fa-chevron-left"></i>
-                                    </span>
-                                    <span class="title flex-center">
-                                        <span class="post-nav-title-item text-ellipsis">linux内核定位手段--SystemTap的使用</span>
-                                        <span class="post-nav-item">Prev posts</span>
-                                    </span>
-                                </a>
-                            </div>
-                        
                         
                             <div class="next-post">
                                 <a class="next"
                                    rel="next"
-                                   href="/2026/03/31/hello-world/"
-                                   title="Hello World"
+                                   href="/2026/04/02/linux%E5%86%85%E6%A0%B8%E5%AE%9A%E4%BD%8D%E6%89%8B%E6%AE%B5-ftrace%E7%9A%84%E4%BD%BF%E7%94%A8/"
+                                   title="linux内核定位手段--ftrace的使用"
                                 >
                                     <span class="title flex-center">
-                                        <span class="post-nav-title-item text-ellipsis">Hello World</span>
+                                        <span class="post-nav-title-item text-ellipsis">linux内核定位手段--ftrace的使用</span>
                                         <span class="post-nav-item">Next posts</span>
                                     </span>
                                     <span class="right arrow-icon flex-center">
@@ -459,7 +424,7 @@
             <div class="pc-post-toc right-toc">
                 <div class="post-toc-wrap border-box">
     <div class="post-toc border-box">
-        <ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#ftrace-%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-text">ftrace 是什么</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ftrace%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="nav-text">ftrace的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E6%8A%93%E5%8F%96%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8%E6%B5%81%E7%A8%8B"><span class="nav-text">1.抓取函数调用流程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E6%8A%93%E5%8F%96%E5%87%BD%E6%95%B0%E8%A2%AB%E8%B0%83%E7%94%A8%E6%B5%81%E7%A8%8B"><span class="nav-text">2.抓取函数被调用流程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-trace-event"><span class="nav-text">3.trace event</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ftrace%E5%8E%9F%E7%90%86"><span class="nav-text">ftrace原理</span></a></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#SystemTap-%E4%BD%BF%E7%94%A8%E6%AD%A5%E9%AA%A4"><span class="nav-text">SystemTap 使用步骤</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SystemTap%E5%8E%9F%E7%90%86"><span class="nav-text">SystemTap原理</span></a></li></ol>
     </div>
 </div>
 
@@ -639,7 +604,7 @@
             <div class="tablet-post-toc">
                 <div class="post-toc-wrap border-box">
     <div class="post-toc border-box">
-        <ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#ftrace-%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-text">ftrace 是什么</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ftrace%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="nav-text">ftrace的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E6%8A%93%E5%8F%96%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8%E6%B5%81%E7%A8%8B"><span class="nav-text">1.抓取函数调用流程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E6%8A%93%E5%8F%96%E5%87%BD%E6%95%B0%E8%A2%AB%E8%B0%83%E7%94%A8%E6%B5%81%E7%A8%8B"><span class="nav-text">2.抓取函数被调用流程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-trace-event"><span class="nav-text">3.trace event</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ftrace%E5%8E%9F%E7%90%86"><span class="nav-text">ftrace原理</span></a></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#SystemTap-%E4%BD%BF%E7%94%A8%E6%AD%A5%E9%AA%A4"><span class="nav-text">SystemTap 使用步骤</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SystemTap%E5%8E%9F%E7%90%86"><span class="nav-text">SystemTap原理</span></a></li></ol>
     </div>
 </div>
 

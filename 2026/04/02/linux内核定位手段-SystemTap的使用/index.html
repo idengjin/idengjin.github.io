@@ -289,7 +289,7 @@
 <h3 id="SystemTap原理"><a href="#SystemTap原理" class="headerlink" title="SystemTap原理"></a>SystemTap原理</h3><p>SystemTap使用了类似C语言的语法来编写脚本（通常以.stp后缀明明）。脚本语言会先解析成C语言，接下来会将脚本重新编译成内核ko（这个过程需要内核符号表），最后这个ko会被插入内核，当内核捕获了SystemTap中的探测事件，内核ko上的句柄函数就会被执行。至此，调试内核时就不需要重新编译内核，省下许多重复步骤。<br><img  
                        lazyload
                        alt="image"
-                       data-src="/systemtap_flow.png"
+                       data-src="/2026/04/02/linux%E5%86%85%E6%A0%B8%E5%AE%9A%E4%BD%8D%E6%89%8B%E6%AE%B5-SystemTap%E7%9A%84%E4%BD%BF%E7%94%A8/systemtap_flow.png"
                         alt="SystemTap flow"
                  ><br>SystemTap 的核心思想是定义一个事件（event），以及给出处理该事件的句柄（Handler）。当一个特定的事件发生时，内核运行该处理句柄，就像快速调用一个子函数一样，处理完之后恢复到内核原始状态。这里有两个概念：</p>
 <p>事件（Event）：systemtap 定义了很多种事件，例如进入或退出某个内核函数、定时器时间到、整个systemtap会话启动或退出等等。<br>句柄（Handler）：就是一些脚本语句，描述了当事件发生时要完成的工作，通常是从事件的上下文提取数据，将它们存入内部变量中，或者打印出来。<br>因此编写systemtap脚本就是一个找到符合需求的事件，并编写事件处理流程的过程。</p>

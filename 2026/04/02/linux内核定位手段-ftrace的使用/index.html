@@ -281,7 +281,7 @@
 <p><img  
                        lazyload
                        alt="image"
-                       data-src="/2024/03/26/Hexo-Github-Ubuntu%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/ction_graph.png"
+                       data-src="/2026/04/02/linux%E5%86%85%E6%A0%B8%E5%AE%9A%E4%BD%8D%E6%89%8B%E6%AE%B5-ftrace%E7%9A%84%E4%BD%BF%E7%94%A8/function_graph.png"
                         alt="function_graph trace"
                  ></p>
 <h4 id="2-抓取函数被调用流程"><a href="#2-抓取函数被调用流程" class="headerlink" title="2.抓取函数被调用流程"></a>2.抓取函数被调用流程</h4><p>比如我想获取nfs_writepages这个函数的被调用流程</p>
@@ -289,7 +289,7 @@
 <p><img  
                        lazyload
                        alt="image"
-                       data-src="/2024/03/26/Hexo-Github-Ubuntu%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/ction_trace.png"
+                       data-src="/2026/04/02/linux%E5%86%85%E6%A0%B8%E5%AE%9A%E4%BD%8D%E6%89%8B%E6%AE%B5-ftrace%E7%9A%84%E4%BD%BF%E7%94%A8/function_trace.png"
                         alt="function trace"
                  ></p>
 <h4 id="3-trace-event"><a href="#3-trace-event" class="headerlink" title="3.trace event"></a>3.trace event</h4><p>&#x2F;sys&#x2F;kernel&#x2F;debug&#x2F;tracing&#x2F;events&#x2F;下定义了静态的trace event(内核模块的公共定位点)，只需要往对应的trace event中的enable写入1就可以打开。</p>
@@ -297,7 +297,7 @@
 <p><img  
                        lazyload
                        alt="image"
-                       data-src="/2024/03/26/Hexo-Github-Ubuntu%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/ce_event.png"
+                       data-src="/2026/04/02/linux%E5%86%85%E6%A0%B8%E5%AE%9A%E4%BD%8D%E6%89%8B%E6%AE%B5-ftrace%E7%9A%84%E4%BD%BF%E7%94%A8/trace_event.png"
                         alt="trace event"
                  ></p>
 <h3 id="ftrace原理"><a href="#ftrace原理" class="headerlink" title="ftrace原理"></a>ftrace原理</h3><p>function trace是利用gcc编译器在编译时在每个函数的入口地址放置一个probe点，这个probe点会调用一个probe函数（gcc默认调用名为mcount的函数），这样这个 probe函数会对每个执行的内核函数进行跟踪（其实有少数几个内核函数不会被跟踪），并打印log到一个内核中的环形缓存（ring buffer）中，而用户可以通过debugfs来访问这个环形缓存中的内容。</p>
@@ -305,7 +305,7 @@
 <p><img  
                        lazyload
                        alt="image"
-                       data-src="/2024/03/26/Hexo-Github-Ubuntu%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/ace_frame.png"
+                       data-src="/2026/04/02/linux%E5%86%85%E6%A0%B8%E5%AE%9A%E4%BD%8D%E6%89%8B%E6%AE%B5-ftrace%E7%9A%84%E4%BD%BF%E7%94%A8/ftrace_frame.png"
                         alt="ftrace frame"
                  ><br>其主要由两部分构成</p>
 <p>ftrace Framework core: 其主要包括利用 debugfs 系统在 &#x2F;debugfs 下建立 tracing 目录，对用户空间输出 trace 信息，并提供了一系列的控制文件<br>一系列的 tracer： 每个 tracer 完成不同的功能，ftrace 的 trace 信息保存在 ring buffer(内存缓冲区) 中，它们统一由 framework 管理<br>对于ftrace有两种主要的跟踪机制往缓冲区写数据</p>
